@@ -1,4 +1,4 @@
-#define OLC_PGE_APPLICATION 0
+#define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
 #include <iostream>
 
