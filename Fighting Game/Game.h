@@ -1,11 +1,13 @@
 #define OLC_PGE_APPLICATION 0
 #pragma once
 #include "olcPixelGameEngine.h"
-#include <iostream>
 
 class Game : public olc::PixelGameEngine
 {
 private:
+
+	std::unique_ptr<olc::Sprite> spritePtr;
+
 	float fOffsetX = 0.0f;
 	float fOffsetY = 0.0f;
 
@@ -24,9 +26,12 @@ private:
 		fWorldX = (float)(nScreenX) / fScaleX + fOffsetX;
 		fWorldY = (float)(nScreenY) / fScaleY + fOffsetY;
 	}
+
 public:
 
 	bool OnUserCreate() override {
+
+		spritePtr = std::make_unique<olc::Sprite>("Resources/fighter1.png");
 
 		fOffsetX = -ScreenWidth() / 2;
 		fOffsetY = -ScreenHeight() / 2;
@@ -70,6 +75,8 @@ public:
 		fOffsetY += (fMouseWorldY_BeforeZoom - fMouseWorldY_AfterZoom);
 
 		Clear(olc::BLACK);
+		SetPixelMode(olc::Pixel::MASK);
+		DrawSprite(olc::vf2d(ScreenWidth() / 2, ScreenHeight() / 2), spritePtr.get());
 
 		//horizontal lines
 		for (float y = 0.0; y <= 10.0f; y++) {
@@ -102,7 +109,7 @@ public:
 	}
 
 	void run() {
-		if (Construct(300, 200, 6, 6)) {
+		if (Construct(1200, 600, 1, 1)) {
 			Start();
 		}
 	}
