@@ -1,5 +1,6 @@
 #pragma once
-class State
-{
+class State {
+	virtual void UpdateState() = 0;
 };
+
 

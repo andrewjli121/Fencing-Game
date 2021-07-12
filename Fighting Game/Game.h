@@ -6,7 +6,9 @@ class Game : public olc::PixelGameEngine
 {
 private:
 
-	std::unique_ptr<olc::Sprite> spritePtr;
+	olc::Sprite *playerOnePtr = nullptr;
+	olc::Decal* playerOneDecal = nullptr;
+	olc::Decal* playerTwoDecal = nullptr;
 
 	float fOffsetX = 0.0f;
 	float fOffsetY = 0.0f;
@@ -29,9 +31,17 @@ private:
 
 public:
 
+	~Game() {
+		delete playerOnePtr;
+		delete playerOneDecal;
+		delete playerTwoDecal;
+	}
+
 	bool OnUserCreate() override {
 
-		spritePtr = std::make_unique<olc::Sprite>("Resources/fighter1.png");
+		playerOnePtr = new olc::Sprite("Resources/fighter1.png");
+		playerOneDecal = new olc::Decal(playerOnePtr);
+		playerTwoDecal = new olc::Decal(playerOnePtr);
 
 		fOffsetX = -ScreenWidth() / 2;
 		fOffsetY = -ScreenHeight() / 2;
@@ -40,9 +50,11 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override {
 
+		//Get mouse coords
 		float fMouseX = (float)GetMouseX();
 		float fMouseY = (float)GetMouseY();
 
+		//Pan
 		if (GetMouse(0).bPressed) {
 			fStartPanX = fMouseX;
 			fStartPanY = fMouseY;
@@ -59,6 +71,7 @@ public:
 		float fMouseWorldX_BeforeZoom, fMouseWorldY_BeforeZoom;
 		ScreenToWorld(fMouseX, fMouseY, fMouseWorldX_BeforeZoom, fMouseWorldY_BeforeZoom);
 
+		//Scroll zoom
 		if (GetMouseWheel() > 0) {
 			fScaleX *= 1.05f;
 			fScaleY *= 1.05f;
@@ -73,38 +86,17 @@ public:
 		ScreenToWorld(fMouseX, fMouseY, fMouseWorldX_AfterZoom, fMouseWorldY_AfterZoom);
 		fOffsetX += (fMouseWorldX_BeforeZoom - fMouseWorldX_AfterZoom);
 		fOffsetY += (fMouseWorldY_BeforeZoom - fMouseWorldY_AfterZoom);
-
+		
 		Clear(olc::BLACK);
+		int pixel_sx, pixel_sy, pixel_ex, pixel_ey;
+
+		WorldToScreen(0, 0, pixel_sx, pixel_sy);
+		WorldToScreen(0, 0, pixel_ex, pixel_ey);
+
 		SetPixelMode(olc::Pixel::MASK);
-		DrawSprite(olc::vf2d(ScreenWidth() / 2, ScreenHeight() / 2), spritePtr.get());
+		DrawDecal(olc::vf2d(pixel_sx, pixel_sy), playerOneDecal, olc::vf2d(fScaleX, fScaleY));
+		//DrawDecal(olc::vf2d(pixel_ex, pixel_ey), playerTwoDecal, olc::vf2d(fScaleX, fScaleY));
 
-		//horizontal lines
-		for (float y = 0.0; y <= 10.0f; y++) {
-
-			float sx = 0.0f, sy = y;
-			float ex = 10.0f, ey = y;
-
-			int pixel_sx, pixel_sy, pixel_ex, pixel_ey;
-
-			WorldToScreen(sx, sy, pixel_sx, pixel_sy);
-			WorldToScreen(ex, ey, pixel_ex, pixel_ey);
-
-			DrawLine(pixel_sx, pixel_sy, pixel_ex, pixel_ey, olc::WHITE);
-		}
-
-		//vertical lines
-		for (float x = 0.0; x <= 10.0f; x++) {
-
-			float sx = x, sy = 0.0f;
-			float ex = x, ey = 10.0f;
-
-			int pixel_sx, pixel_sy, pixel_ex, pixel_ey;
-
-			WorldToScreen(sx, sy, pixel_sx, pixel_sy);
-			WorldToScreen(ex, ey, pixel_ex, pixel_ey);
-
-			DrawLine(pixel_sx, pixel_sy, pixel_ex, pixel_ey, olc::WHITE);
-		}
 		return true;
 	}
 

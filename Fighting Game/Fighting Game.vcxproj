@@ -145,6 +145,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="WalkLeft.h" />
+    <ClInclude Include="WalkRight.h" />
     <ClInclude Include="olcPixelGameEngine.h" />
     <ClInclude Include="State.h" />
   </ItemGroup>
