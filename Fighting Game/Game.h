@@ -9,6 +9,7 @@ private:
 	olc::Sprite *playerOnePtr = nullptr;
 	olc::Decal* playerOneDecal = nullptr;
 	olc::Decal* playerTwoDecal = nullptr;
+	olc::vf2d position;
 
 	float fOffsetX = 0.0f;
 	float fOffsetY = 0.0f;
@@ -42,6 +43,8 @@ public:
 		playerOnePtr = new olc::Sprite("Resources/fighter1.png");
 		playerOneDecal = new olc::Decal(playerOnePtr);
 		playerTwoDecal = new olc::Decal(playerOnePtr);
+		position.x = 0.0f;
+		position.y = 0.0f;
 
 		fOffsetX = -ScreenWidth() / 2;
 		fOffsetY = -ScreenHeight() / 2;
@@ -76,11 +79,12 @@ public:
 			fScaleX *= 1.05f;
 			fScaleY *= 1.05f;
 		} 
-
+		
 		if (GetMouseWheel() < 0) {
 			fScaleX *= 0.95f;
 			fScaleY *= 0.95f;
 		}
+
 
 		float fMouseWorldX_AfterZoom, fMouseWorldY_AfterZoom;
 		ScreenToWorld(fMouseX, fMouseY, fMouseWorldX_AfterZoom, fMouseWorldY_AfterZoom);
@@ -90,13 +94,30 @@ public:
 		Clear(olc::BLACK);
 		int pixel_sx, pixel_sy, pixel_ex, pixel_ey;
 
-		WorldToScreen(0, 0, pixel_sx, pixel_sy);
+		//Move
+		if (GetKey(olc::Key::LEFT).bHeld) {
+			position.x -= (100 *fElapsedTime);
+		}
+
+		if (GetKey(olc::Key::RIGHT).bHeld) {
+			position.x += (100 * fElapsedTime);
+		}
+
+		if (GetKey(olc::Key::UP).bHeld) {
+			position.y -= (100 * fElapsedTime);
+		}
+
+		if (GetKey(olc::Key::DOWN).bHeld) {
+			position.y += (100 * fElapsedTime);
+		}
+
+		WorldToScreen(position.x, position.y, pixel_sx, pixel_sy);
 		WorldToScreen(0, 0, pixel_ex, pixel_ey);
 
 		SetPixelMode(olc::Pixel::MASK);
 		DrawDecal(olc::vf2d(pixel_sx, pixel_sy), playerOneDecal, olc::vf2d(fScaleX, fScaleY));
 		//DrawDecal(olc::vf2d(pixel_ex, pixel_ey), playerTwoDecal, olc::vf2d(fScaleX, fScaleY));
-
+		
 		return true;
 	}
 
