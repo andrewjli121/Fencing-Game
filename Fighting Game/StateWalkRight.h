@@ -1,7 +1,7 @@
 #pragma once
 #include "State.h"
 
-class WalkRight : public State {
+class StateWalkRight : public State {
 public:
 	void UpdateState() {
 		std::cout << "right";

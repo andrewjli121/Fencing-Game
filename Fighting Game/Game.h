@@ -1,6 +1,7 @@
 #define OLC_PGE_APPLICATION 0
 #pragma once
 #include "olcPixelGameEngine.h"
+#include "StateController.h"
 
 class Game : public olc::PixelGameEngine
 {
@@ -39,6 +40,9 @@ public:
 	}
 
 	bool OnUserCreate() override {
+
+		StateController sController;
+		sController.Init();
 
 		playerOnePtr = new olc::Sprite("Resources/fighter1.png");
 		playerOneDecal = new olc::Decal(playerOnePtr);

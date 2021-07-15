@@ -21,6 +21,9 @@
     <ClCompile Include="State.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StateController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="olcPixelGameEngine.h">
@@ -32,10 +35,16 @@
     <ClInclude Include="State.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WalkRight.h">
+    <ClInclude Include="StateIdle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WalkLeft.h">
+    <ClInclude Include="StateWalkLeft.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateWalkRight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

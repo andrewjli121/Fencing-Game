@@ -1,7 +1,7 @@
 #pragma once
 #include "State.h"
 
-class WalkLeft : public State {
+class StateWalkLeft : public State {
 public:
 	void UpdateState() override {
 		std::cout << "left";
