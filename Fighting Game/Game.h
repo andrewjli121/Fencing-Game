@@ -7,6 +7,8 @@ class Game : public olc::PixelGameEngine
 {
 private:
 
+	StateController *stateController = nullptr;
+
 	olc::Sprite *playerOnePtr = nullptr;
 	olc::Decal* playerOneDecal = nullptr;
 	olc::Decal* playerTwoDecal = nullptr;
@@ -41,14 +43,14 @@ public:
 
 	bool OnUserCreate() override {
 
-		StateController sController;
-		sController.Init();
-
 		playerOnePtr = new olc::Sprite("Resources/fighter1.png");
 		playerOneDecal = new olc::Decal(playerOnePtr);
 		playerTwoDecal = new olc::Decal(playerOnePtr);
 		position.x = 0.0f;
 		position.y = 0.0f;
+
+		stateController = new StateController;
+		stateController->Init();
 
 		fOffsetX = -ScreenWidth() / 2;
 		fOffsetY = -ScreenHeight() / 2;
@@ -101,10 +103,12 @@ public:
 		//Move
 		if (GetKey(olc::Key::LEFT).bHeld) {
 			position.x -= (100 *fElapsedTime);
+			stateController->TransitionTo("LEFT");
 		}
 
 		if (GetKey(olc::Key::RIGHT).bHeld) {
 			position.x += (100 * fElapsedTime);
+			stateController->TransitionTo("RIGHT");
 		}
 
 		if (GetKey(olc::Key::UP).bHeld) {
@@ -118,9 +122,12 @@ public:
 		WorldToScreen(position.x, position.y, pixel_sx, pixel_sy);
 		WorldToScreen(0, 0, pixel_ex, pixel_ey);
 
+		stateController->TransitionTo("IDLE");
+		stateController->Update();
+
 		SetPixelMode(olc::Pixel::MASK);
 		DrawDecal(olc::vf2d(pixel_sx, pixel_sy), playerOneDecal, olc::vf2d(fScaleX, fScaleY));
-		//DrawDecal(olc::vf2d(pixel_ex, pixel_ey), playerTwoDecal, olc::vf2d(fScaleX, fScaleY));
+		DrawDecal(olc::vf2d(pixel_ex, pixel_ey), playerTwoDecal, olc::vf2d(fScaleX, fScaleY));
 		
 		return true;
 	}

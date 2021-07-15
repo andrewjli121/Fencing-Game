@@ -3,6 +3,8 @@
 #include "State.h"
 #include "StateIdle.h"
 #include "StateWalkLeft.h"
+#include "StateWalkRight.h"
+
 
 class StateController{
 private:
@@ -10,6 +12,7 @@ private:
 public:
 	void Init();
 	void Update();
+	void TransitionTo(std::string s);
 	~StateController();
 };
 

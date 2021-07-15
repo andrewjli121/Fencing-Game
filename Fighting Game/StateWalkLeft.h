@@ -3,6 +3,9 @@
 
 class StateWalkLeft : public State {
 public:
+	StateWalkLeft() {
+		std::cout << "left";
+	}
 	void UpdateState() override {
 		std::cout << "left";
 	}
