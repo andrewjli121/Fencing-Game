@@ -14,26 +14,6 @@ private:
 	olc::Sprite *playerOnePtr = nullptr;
 	olc::Decal* playerOneDecal = nullptr;
 	olc::Decal* playerTwoDecal = nullptr;
-	//olc::vf2d position;
-
-	//float fOffsetX = 0.0f;
-	//float fOffsetY = 0.0f;
-	//
-	//float fStartPanX = 0.0f;
-	//float fStartPanY = 0.0f;
-	//
-	//float fScaleX = 1.0f;
-	//float fScaleY = 1.0f;
-
-	//void WorldToScreen(float fWorldX, float fWorldY, int& nScreenX, int& nScreenY) {
-	//	nScreenX = (int)((fWorldX - fOffsetX) *fScaleX);
-	//	nScreenY = (int)((fWorldY - fOffsetY) *fScaleY);
-	//}
-	//
-	//void ScreenToWorld(int nScreenX, int nScreenY, float& fWorldX, float& fWorldY) {
-	//	fWorldX = (float)(nScreenX) / fScaleX + fOffsetX;
-	//	fWorldY = (float)(nScreenY) / fScaleY + fOffsetY;
-	//}
 
 public:
 
@@ -45,16 +25,16 @@ public:
 
 	bool OnUserCreate() override {
 
+		//Sprite ptrs
 		playerOnePtr = new olc::Sprite("Resources/fighter1.png");
 		playerOneDecal = new olc::Decal(playerOnePtr);
 		playerTwoDecal = new olc::Decal(playerOnePtr);
 
+		//State referencing/obj
 		stateController = new StateController;
 		stateController->Init();
 
-		//position.x = 0.0f;
-		//position.y = 0.0f;
-
+		//Default offset
 		camera.fOffsetX = -ScreenWidth() / 2;
 		camera.fOffsetY = -ScreenHeight() / 2;
 
@@ -67,47 +47,17 @@ public:
 		float fMouseX = (float)GetMouseX();
 		float fMouseY = (float)GetMouseY();
 
-		//Pan
-		//if (GetMouse(0).bPressed) {
-		//	fStartPanX = fMouseX;
-		//	fStartPanY = fMouseY;
-		//}
+		if(GetMouse(0).bPressed)	camera.MousePressed(fMouseX, fMouseY);
 
-		camera.MousePressed(fMouseX, fMouseY, GetMouse(0).bPressed);
+		if(GetMouse(0).bHeld)	camera.MouseHeld(fMouseX, fMouseY);
 
-		//if (GetMouse(0).bHeld) {
-		//	fOffsetX -= (fMouseX - fStartPanX) / fScaleX;
-		//	fOffsetY -= (fMouseY - fStartPanY) / fScaleY;
-		//
-		//	fStartPanX = fMouseX;
-		//	fStartPanY = fMouseY;
-		//}
-
-		camera.MouseHeld(fMouseX, fMouseY, GetMouse(0).bHeld);
-
-		//float fMouseWorldX_BeforeZoom, fMouseWorldY_BeforeZoom;
 		camera.ScreenToWorld(fMouseX, fMouseY, camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldY_BeforeZoom);
-
-		//Scroll zoom
-		//if (GetMouseWheel() > 0) {
-		//	fScaleX *= 1.05f;
-		//	fScaleY *= 1.05f;
-		//} 
-		//
-		//if (GetMouseWheel() < 0) {
-		//	fScaleX *= 0.95f;
-		//	fScaleY *= 0.95f;
-		//}
-
 		camera.Zoom(GetMouseWheel());
-
-		//float fMouseWorldX_AfterZoom, fMouseWorldY_AfterZoom;
 		camera.ScreenToWorld(fMouseX, fMouseY, camera.fMouseWorldX_AfterZoom, camera.fMouseWorldY_AfterZoom);
-		camera.ChangeOffset(camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldX_AfterZoom);
-		camera.ChangeOffset(camera.fMouseWorldY_BeforeZoom, camera.fMouseWorldY_AfterZoom);
+		camera.ChangeOffset(camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldX_AfterZoom, true);
+		camera.ChangeOffset(camera.fMouseWorldY_BeforeZoom, camera.fMouseWorldY_AfterZoom, false);
 		
 		Clear(olc::BLACK);
-		//int pixel_sx, pixel_sy, pixel_ex, pixel_ey;
 
 		//Move
 		if (GetKey(olc::Key::LEFT).bHeld) {
@@ -127,17 +77,20 @@ public:
 		if (GetKey(olc::Key::DOWN).bHeld) {
 			camera.position.y += (100 * fElapsedTime);
 		}
-
+		
+		//Coords after movement
 		camera.WorldToScreen(camera.position.x, camera.position.y, camera.pixel_onex, camera.pixel_oney);
 		camera.WorldToScreen(0, 0, camera.pixel_twox, camera.pixel_twoy);
 
+		//Transition State
 		stateController->TransitionTo("IDLE");
 		stateController->Update();
 
+		//Draw Decals
 		SetPixelMode(olc::Pixel::MASK);
-		DrawDecal(olc::vf2d(camera.pixel_onex + 100, camera.pixel_oney), playerOneDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
+		DrawDecal(olc::vf2d(camera.pixel_onex, camera.pixel_oney), playerOneDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
 		DrawDecal(olc::vf2d(camera.pixel_twox, camera.pixel_twoy), playerTwoDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
-		
+
 		return true;
 	}
 

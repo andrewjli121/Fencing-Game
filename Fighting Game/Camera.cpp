@@ -6,25 +6,21 @@ void Camera::WorldToScreen(float fWorldX, float fWorldY, int& nScreenX, int& nSc
 }
 
 void Camera::ScreenToWorld(int nScreenX, int nScreenY, float& fWorldX, float& fWorldY) {
-	fWorldX = (float)(nScreenX) / fScaleX + fOffsetX;
-	fWorldY = (float)(nScreenY) / fScaleY + fOffsetY;
+	fWorldX = ((float)(nScreenX) / fScaleX) + fOffsetX;
+	fWorldY = ((float)(nScreenY) / fScaleY) + fOffsetY;
 }
 
-void Camera::MousePressed(float fMouseX, float fMouseY, bool a) {
-	if (a) {
-		fStartPanX = fMouseX;
-		fStartPanY = fMouseY;
-	}
+void Camera::MousePressed(float fMouseX, float fMouseY) {
+	fStartPanX = fMouseX;
+	fStartPanY = fMouseY;
 }
 
-void Camera::MouseHeld(float fMouseX, float fMouseY, bool a) {
-	if (a) {
-		fOffsetX -= (fMouseX - fStartPanX) / fScaleX;
-		fOffsetY -= (fMouseY - fStartPanY) / fScaleY;
+void Camera::MouseHeld(float fMouseX, float fMouseY) {
+	fOffsetX -= (fMouseX - fStartPanX) / fScaleX;
+	fOffsetY -= (fMouseY - fStartPanY) / fScaleY;
 
-		fStartPanX = fMouseX;
-		fStartPanY = fMouseY;
-	}
+	fStartPanX = fMouseX;
+	fStartPanY = fMouseY;
 }
 
 void Camera::Zoom(int scroll) {
@@ -38,12 +34,11 @@ void Camera::Zoom(int scroll) {
 	}
 }
 
-void Camera::ChangeOffset(float FBZ, float FAZ) {
-	fOffsetX += (FBZ - FAZ);
-	fOffsetY += (FBZ - FAZ);
+void Camera::ChangeOffset(float FBZ, float FAZ, bool xy) {
+	if (xy) {
+		fOffsetX += (FBZ - FAZ);
+	}
+	else {
+		fOffsetY += (FBZ - FAZ);
+	}
 }
-
-//void Camera::ChangePos(Camera &camera, float fElapsedTime) {
-	//camera.position.x -= (100 * fElapsedTime);
-//}
-
