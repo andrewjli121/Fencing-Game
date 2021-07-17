@@ -6,12 +6,12 @@ private:
 
 	float fStartPanX{ 0.0f };
 	float fStartPanY{ 0.0f };
-	
+
 public:
 	float fScaleX{ 1.0f };
 	float fScaleY{ 1.0f };
-	float fOffsetX;
-	float fOffsetY;
+	float fOffsetX{ 0 };
+	float fOffsetY{ 0 };
 
 	olc::vf2d position = { 0.0f, 0.0f };
 

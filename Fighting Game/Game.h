@@ -35,9 +35,10 @@ public:
 		stateController->Init();
 
 		//Default offset
-		camera.fOffsetX = -ScreenWidth() / 2;
-		camera.fOffsetY = -ScreenHeight() / 2;
-
+		camera.fOffsetX = -ScreenWidth() * 0.50;
+		camera.fOffsetY = -ScreenHeight() * 0.55;
+		camera.position.x = -playerOnePtr->width / 2;
+		camera.position.y = -playerOnePtr->width / 2;
 		return true;
 	}
 
@@ -45,15 +46,17 @@ public:
 
 		//Get mouse coords
 		float fMouseX = (float)GetMouseX();
+		float fZeroX = (float)ScreenWidth() * 0.50;
+		float fZeroY = (float)ScreenHeight() * 0.90;
 		float fMouseY = (float)GetMouseY();
 
-		if(GetMouse(0).bPressed)	camera.MousePressed(fMouseX, fMouseY);
+		if(GetMouse(0).bPressed)	camera.MousePressed(fMouseX, fZeroY);
 
-		if(GetMouse(0).bHeld)	camera.MouseHeld(fMouseX, fMouseY);
+		if(GetMouse(0).bHeld)	camera.MouseHeld(fMouseX, fZeroY);
 
-		camera.ScreenToWorld(fMouseX, fMouseY, camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldY_BeforeZoom);
+		camera.ScreenToWorld(fZeroX, fZeroY, camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldY_BeforeZoom);
 		camera.Zoom(GetMouseWheel());
-		camera.ScreenToWorld(fMouseX, fMouseY, camera.fMouseWorldX_AfterZoom, camera.fMouseWorldY_AfterZoom);
+		camera.ScreenToWorld(fZeroX, fZeroY, camera.fMouseWorldX_AfterZoom, camera.fMouseWorldY_AfterZoom);
 		camera.ChangeOffset(camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldX_AfterZoom, true);
 		camera.ChangeOffset(camera.fMouseWorldY_BeforeZoom, camera.fMouseWorldY_AfterZoom, false);
 		
@@ -88,9 +91,9 @@ public:
 
 		//Draw Decals
 		SetPixelMode(olc::Pixel::MASK);
+		FillCircle(600, 540, 2, olc::YELLOW);
 		DrawDecal(olc::vf2d(camera.pixel_onex, camera.pixel_oney), playerOneDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
 		DrawDecal(olc::vf2d(camera.pixel_twox, camera.pixel_twoy), playerTwoDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
-
 		return true;
 	}
 
