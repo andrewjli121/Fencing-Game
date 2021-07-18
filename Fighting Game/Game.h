@@ -8,10 +8,10 @@ class Game : public olc::PixelGameEngine
 {
 private:
 
-	StateController *stateController = nullptr;
+	StateController* stateController = nullptr;
 	Camera camera;
 
-	olc::Sprite *playerOnePtr = nullptr;
+	olc::Sprite* playerOnePtr = nullptr;
 	olc::Decal* playerOneDecal = nullptr;
 	olc::Decal* playerTwoDecal = nullptr;
 
@@ -50,40 +50,47 @@ public:
 		float fZeroY = (float)ScreenHeight() * 0.90;
 		float fMouseY = (float)GetMouseY();
 
-		if(GetMouse(0).bPressed)	camera.MousePressed(fMouseX, fZeroY);
-
-		if(GetMouse(0).bHeld)	camera.MouseHeld(fMouseX, fZeroY);
+		if (GetMouse(0).bPressed)	camera.MousePressed(fMouseX, fZeroY);
+		if (GetMouse(0).bHeld)	camera.MouseHeld(fMouseX, fZeroY);
 
 		camera.ScreenToWorld(fZeroX, fZeroY, camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldY_BeforeZoom);
-		camera.Zoom(GetMouseWheel());
+		camera.ZoomBig(GetMouseWheel());
 		camera.ScreenToWorld(fZeroX, fZeroY, camera.fMouseWorldX_AfterZoom, camera.fMouseWorldY_AfterZoom);
 		camera.ChangeOffset(camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldX_AfterZoom, true);
 		camera.ChangeOffset(camera.fMouseWorldY_BeforeZoom, camera.fMouseWorldY_AfterZoom, false);
-		
+
 		Clear(olc::BLACK);
 
 		//Move
 		if (GetKey(olc::Key::LEFT).bHeld) {
-			camera.position.x -= (100 *fElapsedTime);
-			stateController->TransitionTo("LEFT");
+			camera.position.x -= (250 * fElapsedTime);
+			//stateController->TransitionTo("LEFT");
 		}
 
 		if (GetKey(olc::Key::RIGHT).bHeld) {
-			camera.position.x += (100 * fElapsedTime);
+			camera.position.x += (250 * fElapsedTime);
 			stateController->TransitionTo("RIGHT");
 		}
 
 		if (GetKey(olc::Key::UP).bHeld) {
-			camera.position.y -= (100 * fElapsedTime);
+			camera.position.y -= (250 * fElapsedTime);
 		}
 
 		if (GetKey(olc::Key::DOWN).bHeld) {
-			camera.position.y += (100 * fElapsedTime);
+			camera.position.y += (250 * fElapsedTime);
 		}
-		
+
 		//Coords after movement
 		camera.WorldToScreen(camera.position.x, camera.position.y, camera.pixel_onex, camera.pixel_oney);
 		camera.WorldToScreen(0, 0, camera.pixel_twox, camera.pixel_twoy);
+
+		while (camera.pixel_onex < 0) {
+			camera.DynamicZoom(fZeroX, fZeroY, -1);
+		}
+
+		while (camera.pixel_onex > 0) {
+			camera.DynamicZoom(fZeroX, fZeroY, 1);
+		}
 
 		//Transition State
 		stateController->TransitionTo("IDLE");

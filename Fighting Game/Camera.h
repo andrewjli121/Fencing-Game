@@ -27,7 +27,11 @@ public:
 
 	void MouseHeld(float fMouseX, float fMouseY);
 
-	void Zoom(int scroll);
+	void ZoomSmall(int scroll);
+
+	void ZoomBig(int scroll);
+
+	void DynamicZoom(float fZeroX, float fZeroY, int zoom);
 
 	void ChangeOffset(float FBZ, float FAZ, bool xy);
 
