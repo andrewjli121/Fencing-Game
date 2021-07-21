@@ -140,14 +140,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Fighter.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Fighter.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="StateController.h" />

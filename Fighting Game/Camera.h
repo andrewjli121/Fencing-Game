@@ -13,8 +13,6 @@ public:
 	float fOffsetX{ 0 };
 	float fOffsetY{ 0 };
 
-	olc::vf2d position = { 0.0f, 0.0f };
-
 	int pixel_onex, pixel_oney, pixel_twox, pixel_twoy;
 
 	float fMouseWorldX_BeforeZoom, fMouseWorldY_BeforeZoom, fMouseWorldX_AfterZoom, fMouseWorldY_AfterZoom;

@@ -25,12 +25,12 @@ void Camera::MouseHeld(float fMouseX, float fMouseY) {
 
 void Camera::ZoomSmall(int scroll) {
 	if (scroll > 0) {
-		fScaleX *= 1.0001f;
-		fScaleY *= 1.0001f;
+		fScaleX *= 1.001f;
+		fScaleY *= 1.001f;
 	}
 	else if (scroll < 0) {
-		fScaleX *= 0.9999f;
-		fScaleY *= 0.9999f;
+		fScaleX *= 0.999f;
+		fScaleY *= 0.999f;
 	}
 }
 
@@ -55,10 +55,9 @@ void Camera::ChangeOffset(float FBZ, float FAZ, bool xy) {
 }
 
 void Camera::DynamicZoom(float fZeroX, float fZeroY, int zoom) {
-		WorldToScreen(position.x, position.y, pixel_onex, pixel_oney);
-		ScreenToWorld(fZeroX, fZeroY, fMouseWorldX_BeforeZoom, fMouseWorldY_BeforeZoom);
-		ZoomSmall(zoom);
-		ScreenToWorld(fZeroX, fZeroY, fMouseWorldX_AfterZoom, fMouseWorldY_AfterZoom);
-		ChangeOffset(fMouseWorldX_BeforeZoom, fMouseWorldX_AfterZoom, true);
-		ChangeOffset(fMouseWorldY_BeforeZoom, fMouseWorldY_AfterZoom, false);
+	ScreenToWorld(fZeroX, fZeroY, fMouseWorldX_BeforeZoom, fMouseWorldY_BeforeZoom);
+	ZoomSmall(zoom);
+	ScreenToWorld(fZeroX, fZeroY, fMouseWorldX_AfterZoom, fMouseWorldY_AfterZoom);
+	ChangeOffset(fMouseWorldX_BeforeZoom, fMouseWorldX_AfterZoom, true);
+	ChangeOffset(fMouseWorldY_BeforeZoom, fMouseWorldY_AfterZoom, false);
 }
