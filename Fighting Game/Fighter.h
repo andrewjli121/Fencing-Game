@@ -15,6 +15,6 @@ private:
 public:
 	olc::vf2d position = { 0.0f, 0.0f };
 	std::vector<polygon*> hitBoxes{ center, head, lArm, lLeg, rArm, rLeg };
-	void linkFiles(std::vector<polygon*> hitBoxes, Fighter fighter);
+	void linkFiles(std::vector<polygon*> hitBoxes);
 };
 

@@ -20,6 +20,7 @@ public:
 	static void makequad(polygon &quad);
 	static void updatepoly(polygon& quad);
 	static bool collision(polygon& r1, polygon& r2);
+	static void allCollision(std::vector<polygon*> f1, std::vector<polygon*> f2);
 	static void drawpoly(polygon poly);
 };
 

@@ -52,11 +52,11 @@ public:
 		Collision::makequad(test.quad);
 		Collision::makequad(test.quad2);
 
-		std::fstream center{ "Hitboxes//center.txt" };
-		std::fstream head{ "Hitboxes//head.txt" };
-		Collision::getpoly(*fighter1.hitBoxes[0], center);
-		Collision::getpoly(*fighter1.hitBoxes[1], head);
-		
+		//std::fstream center{ "Hitboxes//center.txt" };
+		//std::fstream head{ "Hitboxes//head.txt" };
+		//Collision::getpoly(*fighter1.hitBoxes[0], center);
+		//Collision::getpoly(*fighter1.hitBoxes[1], head);
+		fighter1.linkFiles(fighter1.hitBoxes);
 		return true;
 	}
 
@@ -149,15 +149,9 @@ public:
 		test.quad2.pos.x = 170;
 		test.quad.overlap = test.collision(test.quad, test.quad2);
 		test.quad2.overlap = test.collision(test.quad, test.quad2);
+		fighter1.hitBoxes[0]->angle += 2 * fElapsedTime;
 
-		for (auto *a : fighter1.hitBoxes) {
-			for (auto *b : fighter1.hitBoxes) {
-				if (Collision::collision(*a, *b)) {
-					a->overlap = true;
-					b->overlap = true;
-				};
-			}
-		}
+		Collision::allCollision(fighter1.hitBoxes, fighter1.hitBoxes);
 
 		Collision::drawpoly(test.quad);
 		Collision::drawpoly(test.quad2);
