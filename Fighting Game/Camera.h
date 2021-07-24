@@ -1,5 +1,4 @@
 #pragma once
-#include "olcPixelGameEngine.h"
 
 class Camera {
 private:
@@ -32,6 +31,5 @@ public:
 	void DynamicZoom(float fZeroX, float fZeroY, int zoom);
 
 	void ChangeOffset(float FBZ, float FAZ, bool xy);
-
 };
 

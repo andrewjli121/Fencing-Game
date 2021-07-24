@@ -49,8 +49,14 @@ public:
 		fighter2.position.x = -playerTwoPtr->width / 2;
 		fighter2.position.y = -playerTwoPtr->height / 2;
 
-		test.makequad(test.quad);
+		Collision::makequad(test.quad);
+		Collision::makequad(test.quad2);
 
+		std::fstream center{ "Hitboxes//center.txt" };
+		std::fstream head{ "Hitboxes//head.txt" };
+		Collision::getpoly(*fighter1.hitBoxes[0], center);
+		Collision::getpoly(*fighter1.hitBoxes[1], head);
+		
 		return true;
 	}
 
@@ -131,19 +137,38 @@ public:
 		FillCircle(camera.pixel_twox + (playerTwoPtr->width / 2 * camera.fScaleX), camera.pixel_twoy, 2, olc::BLUE);
 		DrawDecal(olc::vf2d(camera.pixel_onex, camera.pixel_oney), playerOneDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
 		DrawDecal(olc::vf2d(camera.pixel_twox, camera.pixel_twoy), playerTwoDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
+		
+		test.updatepoly(test.quad);
 
-		for (int i = 0; i < test.quad.o.size(); i++) {
-			test.quad.p[i] = {
-				(test.quad.o[i].x * cosf(test.quad.angle)) - (test.quad.o[i].y * sinf(test.quad.angle)) + test.quad.pos.x,
-				(test.quad.o[i].x * sinf(test.quad.angle)) + (test.quad.o[i].y * cosf(test.quad.angle)) + test.quad.pos.y
-			};
-			test.quad.overlap = false;
+		test.updatepoly(test.quad2);
+
+		for (auto *a : fighter1.hitBoxes) {
+			Collision::updatepoly(*a);
 		}
 
-		for (int i = 0; i < test.quad.p.size(); i++) {
-			DrawLine(test.quad.p[i].x, test.quad.p[i].y, test.quad.p[(i+1) % test.quad.p.size()].x, test.quad.p[(i + 1) % test.quad.p.size()].y, olc::WHITE);
+		test.quad2.pos.x = 170;
+		test.quad.overlap = test.collision(test.quad, test.quad2);
+		test.quad2.overlap = test.collision(test.quad, test.quad2);
+
+		for (auto *a : fighter1.hitBoxes) {
+			for (auto *b : fighter1.hitBoxes) {
+				if (Collision::collision(*a, *b)) {
+					a->overlap = true;
+					b->overlap = true;
+				};
+			}
 		}
+
+		Collision::drawpoly(test.quad);
+		Collision::drawpoly(test.quad2);
+		for (polygon *a : fighter1.hitBoxes) {
+			Collision::drawpoly(*a);
+		}
+
+
+
 		test.quad.angle += 2 * fElapsedTime;
+
 		return true;
 	}
 
