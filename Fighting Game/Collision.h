@@ -14,11 +14,8 @@ class Collision{
 private:
 
 public:
-	polygon quad;
-	polygon quad2;
 	static void getpoly(polygon& poly, std::fstream &file);
-	static void makequad(polygon &quad);
-	static void updatepoly(polygon& quad);
+	static void updatepoly(polygon& quad, int camx, int camy, float scale);
 	static bool collision(polygon& r1, polygon& r2);
 	static void allCollision(std::vector<polygon*> f1, std::vector<polygon*> f2);
 	static void drawpoly(polygon poly);

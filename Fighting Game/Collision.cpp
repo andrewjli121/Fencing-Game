@@ -15,22 +15,11 @@ void Collision::getpoly(polygon &poly, std::fstream &file) {
 	else { std::cout<< "File failed to open"; }
 }
 
-
-void Collision::makequad(polygon &quad) {
-	quad.pos = { 100,100 };
-	quad.angle = { 0.0f };
-	quad.o.push_back({ -30,-30 });
-	quad.o.push_back({ -30,30 });
-	quad.o.push_back({ 30,30 });
-	quad.o.push_back({ 30,-30 });
-	quad.p.resize(4);
-}
-
-void Collision::updatepoly(polygon& quad) {
+void Collision::updatepoly(polygon& quad, int camx, int camy, float scale) {
 	for (int i = 0; i < quad.o.size(); i++) {
 		quad.p[i] = {
-			(quad.o[i].x * cosf(quad.angle)) - (quad.o[i].y * sinf(quad.angle)) + quad.pos.x,
-			(quad.o[i].x * sinf(quad.angle)) + (quad.o[i].y * cosf(quad.angle)) + quad.pos.y
+			((quad.o[i].x * cosf(quad.angle)) - (quad.o[i].y * sinf(quad.angle)) + quad.pos.x) * scale + camx,
+			((quad.o[i].x * sinf(quad.angle)) + (quad.o[i].y * cosf(quad.angle)) + quad.pos.y) * scale + camy
 		};
 		quad.overlap = false;
 	}

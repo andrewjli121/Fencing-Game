@@ -49,14 +49,8 @@ public:
 		fighter2.position.x = -playerTwoPtr->width / 2;
 		fighter2.position.y = -playerTwoPtr->height / 2;
 
-		Collision::makequad(test.quad);
-		Collision::makequad(test.quad2);
-
-		//std::fstream center{ "Hitboxes//center.txt" };
-		//std::fstream head{ "Hitboxes//head.txt" };
-		//Collision::getpoly(*fighter1.hitBoxes[0], center);
-		//Collision::getpoly(*fighter1.hitBoxes[1], head);
 		fighter1.linkFiles(fighter1.hitBoxes);
+
 		return true;
 	}
 
@@ -137,32 +131,19 @@ public:
 		FillCircle(camera.pixel_twox + (playerTwoPtr->width / 2 * camera.fScaleX), camera.pixel_twoy, 2, olc::BLUE);
 		DrawDecal(olc::vf2d(camera.pixel_onex, camera.pixel_oney), playerOneDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
 		DrawDecal(olc::vf2d(camera.pixel_twox, camera.pixel_twoy), playerTwoDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
-		
-		test.updatepoly(test.quad);
 
-		test.updatepoly(test.quad2);
-
+		//Boxes
 		for (auto *a : fighter1.hitBoxes) {
-			Collision::updatepoly(*a);
+			Collision::updatepoly(*a, camera.pixel_onex, camera.pixel_oney, camera.fScaleX);
 		}
-
-		test.quad2.pos.x = 170;
-		test.quad.overlap = test.collision(test.quad, test.quad2);
-		test.quad2.overlap = test.collision(test.quad, test.quad2);
-		fighter1.hitBoxes[0]->angle += 2 * fElapsedTime;
-
+		
 		Collision::allCollision(fighter1.hitBoxes, fighter1.hitBoxes);
 
-		Collision::drawpoly(test.quad);
-		Collision::drawpoly(test.quad2);
 		for (polygon *a : fighter1.hitBoxes) {
 			Collision::drawpoly(*a);
 		}
 
-
-
-		test.quad.angle += 2 * fElapsedTime;
-
+		fighter1.hitBoxes[0]->angle += 2 * fElapsedTime;
 		return true;
 	}
 
