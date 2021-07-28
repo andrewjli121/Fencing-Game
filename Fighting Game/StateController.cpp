@@ -22,7 +22,20 @@
 		else if (s == "RIGHT") {
 			currentState = new StateWalkRight();
 		}
-	}
+		else if (s == "LUNGE") {
+			currentState = new StateLunge();
+		}
+		else if (s == "UP") {
+			currentState = new StateIdle();
+		}
+		else if (s == "DOWN") {
+			currentState = new StateIdle();
+		}
+		else if (s == "HIT") {
+			currentState = new StateHit();
+		}
+}
+
 
 	StateController::~StateController() {
 		delete currentState;

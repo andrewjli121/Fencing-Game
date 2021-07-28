@@ -4,12 +4,16 @@
 #include "StateIdle.h"
 #include "StateWalkLeft.h"
 #include "StateWalkRight.h"
-
+#include "StateLunge.h"
+#include "Fighter.h"
+#include "StateHit.h"
 
 class StateController{
 private:
-	State* currentState;
+	//std::string change;
 public:
+	State* currentState;
+	std::string change;
 	void Init();
 	void Update();
 	void TransitionTo(std::string s);

@@ -7,6 +7,6 @@ public:
 		std::cout << "left";
 	}
 	void UpdateState() override {
-		std::cout << "left";
+
 	}
 };

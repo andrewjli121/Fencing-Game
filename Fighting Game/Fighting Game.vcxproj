@@ -157,7 +157,9 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="StateController.h" />
+    <ClInclude Include="StateHit.h" />
     <ClInclude Include="StateIdle.h" />
+    <ClInclude Include="StateLunge.h" />
     <ClInclude Include="StateWalkLeft.h" />
     <ClInclude Include="StateWalkRight.h" />
     <ClInclude Include="olcPixelGameEngine.h" />

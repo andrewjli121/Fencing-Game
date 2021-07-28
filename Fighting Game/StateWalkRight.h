@@ -6,7 +6,6 @@ public:
 	StateWalkRight() {
 		std::cout << "right";
 	}
-	void UpdateState() {
-		std::cout << "right";
+	void UpdateState() override{
 	}
 };

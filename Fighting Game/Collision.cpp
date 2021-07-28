@@ -69,11 +69,10 @@ bool Collision::collision(polygon& r1, polygon& r2) {
 
 void Collision::allCollision(std::vector<polygon*> f1, std::vector<polygon*> f2){
 	for (int i = 0; i < f1.size(); i++) {
-		for (int j = i + 1; j < f2.size(); j++) {
-			f1[j]->overlap = Collision::collision(*f1[j], *f2[i]);
-			if (f1[j]->overlap) {
-				f2[i]->overlap = true;
-				break;
+		for (int j = 0; j < f2.size(); j++) {
+			if (Collision::collision(*f1[i], *f2[j])) {
+				f2[j]->overlap = true;
+				f1[i]->overlap = true;
 			}
 		}
 	}
@@ -81,6 +80,6 @@ void Collision::allCollision(std::vector<polygon*> f1, std::vector<polygon*> f2)
 
 void Collision::drawpoly(polygon poly) {
 	for (int i = 0; i < poly.p.size(); i++) {
-		olc::Renderer::ptrPGE->DrawLine(poly.p[i].x, poly.p[i].y, poly.p[(i + 1) % poly.p.size()].x, poly.p[(i + 1) % poly.p.size()].y, (poly.overlap ? olc::RED : olc::WHITE));
+		olc::Renderer::ptrPGE->DrawLine(poly.p[i].x, poly.p[i].y, poly.p[(i + 1) % poly.p.size()].x, poly.p[(i + 1) % poly.p.size()].y, (poly.overlap ? olc::RED : olc::BLACK));
 	}
 }

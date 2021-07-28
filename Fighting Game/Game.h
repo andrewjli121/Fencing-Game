@@ -5,12 +5,14 @@
 #include "Camera.h"
 #include "Fighter.h"
 #include "Collision.h"
+#include "Input.h"
 
 class Game : public olc::PixelGameEngine
 {
 private:
 
-	StateController* stateController = nullptr;
+	StateController* stateController1 = nullptr;
+	StateController* stateController2 = nullptr;
 	Fighter fighter1;
 	Fighter fighter2;
 	Camera camera;
@@ -19,7 +21,6 @@ private:
 	olc::Sprite* playerTwoPtr = nullptr;
 	olc::Decal* playerOneDecal = nullptr;
 	olc::Decal* playerTwoDecal = nullptr;
-	Collision test;
 
 public:
 
@@ -32,25 +33,27 @@ public:
 	bool OnUserCreate() override {
 
 		//Sprite ptrs
-		playerOnePtr = new olc::Sprite("Resources/fighter1.png");
-		playerTwoPtr = new olc::Sprite("Resources/fighter1.png");
+		playerOnePtr = new olc::Sprite("Resources/1IdleMid.png");
+		playerTwoPtr = new olc::Sprite("Resources/2IdleMid.png");
 		playerOneDecal = new olc::Decal(playerOnePtr);
-		playerTwoDecal = new olc::Decal(playerOnePtr);
+		playerTwoDecal = new olc::Decal(playerTwoPtr);
 
 		//State referencing/obj
-		stateController = new StateController;
-		stateController->Init();
+		stateController1 = new StateController;
+		stateController1->Init();
+		stateController2 = new StateController;
+		stateController2->Init();
 
 		//Default offset
 		camera.fOffsetX = -ScreenWidth() * 0.50;
-		camera.fOffsetY = -ScreenHeight() * 0.55;
-		fighter1.position.x = -playerOnePtr->width / 2;
+		camera.fOffsetY = -ScreenHeight() * 0.70;
+		fighter1.position.x = -playerOnePtr->width / 2 - 400;
 		fighter1.position.y = -playerOnePtr->height / 2;
-		fighter2.position.x = -playerTwoPtr->width / 2;
+		fighter2.position.x = -playerTwoPtr->width / 2 + 400;
 		fighter2.position.y = -playerTwoPtr->height / 2;
 
-		fighter1.linkFiles(fighter1.hitBoxes);
-
+		fighter1.linkFilesOne(fighter1.hitBoxes);
+		fighter2.linkFilesTwo(fighter2.hitBoxes);
 		return true;
 	}
 
@@ -72,27 +75,14 @@ public:
 		camera.ChangeOffset(camera.fMouseWorldX_BeforeZoom, camera.fMouseWorldX_AfterZoom, true);
 		camera.ChangeOffset(camera.fMouseWorldY_BeforeZoom, camera.fMouseWorldY_AfterZoom, false);
 
-		Clear(olc::BLACK);
+		Clear(olc::WHITE);
 
-		//Move Player 1
-		if (GetKey(olc::Key::LEFT).bHeld) {
-			fighter1.position.x -= (1000 * fElapsedTime);
-			stateController->TransitionTo("LEFT");
-		}
-
-		if (GetKey(olc::Key::RIGHT).bHeld) {
-			fighter1.position.x += (1000 * fElapsedTime);
-			stateController->TransitionTo("RIGHT");
-		}
-
-		//Move Player 2
-		if (GetKey(olc::Key::D).bHeld) {
-			fighter2.position.x += (1000 * fElapsedTime);
-		}
-
-		if (GetKey(olc::Key::A).bHeld) {
-			fighter2.position.x -= (1000 * fElapsedTime);
-		}
+		//Transition State
+		stateController1->TransitionTo("IDLE");
+		stateController2->TransitionTo("IDLE");
+		Input::getInput(fighter1, fighter2, stateController1, stateController2, fElapsedTime);
+		stateController1->Update();
+		stateController2->Update();
 
 		//Coords after movement
 		camera.WorldToScreen(fighter1.position.x, fighter1.position.y, camera.pixel_onex, camera.pixel_oney);
@@ -120,30 +110,51 @@ public:
 			pTwoMP = (camera.pixel_twox + (playerTwoPtr->width / 2 * camera.fScaleX));
 		}
 
-		//Transition State
-		stateController->TransitionTo("IDLE");
-		stateController->Update();
-
 		//Draw Decals
 		SetPixelMode(olc::Pixel::MASK);
 		FillCircle(600, 540, 2, olc::YELLOW);
-		FillCircle(camera.pixel_onex + (playerOnePtr->width / 2 * camera.fScaleX), camera.pixel_oney, 2, olc::RED);
-		FillCircle(camera.pixel_twox + (playerTwoPtr->width / 2 * camera.fScaleX), camera.pixel_twoy, 2, olc::BLUE);
 		DrawDecal(olc::vf2d(camera.pixel_onex, camera.pixel_oney), playerOneDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
 		DrawDecal(olc::vf2d(camera.pixel_twox, camera.pixel_twoy), playerTwoDecal, olc::vf2d(camera.fScaleX, camera.fScaleY));
-
+		
 		//Boxes
 		for (auto *a : fighter1.hitBoxes) {
 			Collision::updatepoly(*a, camera.pixel_onex, camera.pixel_oney, camera.fScaleX);
 		}
-		
-		Collision::allCollision(fighter1.hitBoxes, fighter1.hitBoxes);
-
-		for (polygon *a : fighter1.hitBoxes) {
-			Collision::drawpoly(*a);
+		for (auto *a : fighter2.hitBoxes) {
+			Collision::updatepoly(*a, camera.pixel_twox, camera.pixel_twoy, camera.fScaleX);
 		}
 
-		fighter1.hitBoxes[0]->angle += 2 * fElapsedTime;
+		Collision::allCollision(fighter1.hitBoxes, fighter2.hitBoxes);
+
+		//Lives F1
+		for (int i = 0; i < fighter1.hitBoxes.size(); i++) {
+			Collision::drawpoly(*fighter1.hitBoxes[i]);
+			static bool change = false;
+			if (fighter1.hitBoxes[0]->overlap && !change) {
+				stateController1->TransitionTo("HIT");
+				change = true;
+				fighter1.lives--;
+			}
+			if (!fighter1.hitBoxes[0]->overlap && change) {
+				change = false;
+			}
+		}
+		//Lives F2
+		for (int i = 0; i < fighter2.hitBoxes.size(); i++) {
+			Collision::drawpoly(*fighter2.hitBoxes[i]);
+			static bool change = false;
+			if (fighter2.hitBoxes[0]->overlap && !change) {
+				stateController2->TransitionTo("HIT");
+				change = true;
+				fighter2.lives--;
+			}
+			if (!fighter2.hitBoxes[0]->overlap && change) {
+				change = false;
+			}
+		}
+		
+		DrawString(10,10, "Fighter 1: " + std::to_string(fighter1.lives), olc::BLACK);
+		DrawString(1090, 10, "Fighter 2: " + std::to_string(fighter2.lives), olc::BLACK);
 		return true;
 	}
 
